@@ -165,7 +165,7 @@
 
     <!-- Right: Live Editable Invoice Canvas -->
     <section class="lg:col-span-8">
-      <div id="invoiceCanvas" class="bg-white rounded-2xl border border-slate-200 shadow-xl p-6 sm:p-10 transition-all relative overflow-hidden">
+      <div id="invoiceCanvas" class="bg-white rounded-2xl border border-slate-200 shadow-xl p-5 sm:p-7 transition-all relative overflow-hidden">
         
         <!-- Top Status Ribbon (Shown conditionally) -->
         <div id="invoiceStatusRibbon" class="hidden absolute top-6 -right-12 transform rotate-45 bg-indigo-600 text-white text-[11px] font-bold uppercase tracking-wider py-1 px-14 shadow-md text-center">
@@ -173,24 +173,24 @@
         </div>
 
         <!-- Invoice Header: Logo & Titles -->
-        <div class="flex flex-col sm:flex-row justify-between items-start gap-6 pb-8 border-b border-slate-100">
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-4 pb-5 border-b border-slate-100">
           <!-- Logo & Company info -->
-          <div class="space-y-4 max-w-sm w-full">
-            <div class="relative group w-36 h-20 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-indigo-500 overflow-hidden transition-colors" id="logoUploadBox">
-              <img id="logoPreview" class="hidden w-full h-full object-contain p-2" alt="Company Logo">
-              <div id="logoPlaceholder" class="text-center p-2">
-                <i data-lucide="image-plus" class="w-6 h-6 text-slate-400 mx-auto group-hover:text-indigo-600 transition-colors"></i>
-                <span class="text-[11px] font-medium text-slate-500 block mt-1">Add Business Logo</span>
+          <div class="space-y-3 max-w-sm w-full">
+            <div class="relative group w-32 h-16 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-indigo-500 overflow-hidden transition-colors" id="logoUploadBox">
+              <img id="logoPreview" class="hidden w-full h-full object-contain p-1.5" alt="Company Logo">
+              <div id="logoPlaceholder" class="text-center p-1.5">
+                <i data-lucide="image-plus" class="w-5 h-5 text-slate-400 mx-auto group-hover:text-indigo-600 transition-colors"></i>
+                <span class="text-[10px] font-medium text-slate-500 block mt-0.5">Add Business Logo</span>
               </div>
               <input type="file" id="logoFileInput" accept="image/*" class="hidden">
-              <button id="removeLogoBtn" type="button" class="hidden absolute top-1 right-1 bg-rose-500 text-white rounded-full p-1 shadow hover:bg-rose-600 text-xs">
+              <button id="removeLogoBtn" type="button" class="hidden absolute top-1 right-1 bg-rose-500 text-white rounded-full p-0.5 shadow hover:bg-rose-600 text-xs">
                 <i data-lucide="x" class="w-3 h-3"></i>
               </button>
             </div>
 
             <!-- Freelancer / Business Details -->
-            <div class="space-y-1.5">
-              <input type="text" id="senderName" placeholder="Your Name or Business Name" class="w-full font-bold text-lg text-slate-800 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
+            <div class="space-y-1">
+              <input type="text" id="senderName" placeholder="Your Name or Business Name" class="w-full font-bold text-base text-slate-800 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
               <input type="text" id="senderTitle" placeholder="Professional Title (e.g. Full-Stack Developer)" class="w-full text-xs text-slate-600 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
               <input type="email" id="senderEmail" placeholder="email@yourdomain.com" class="w-full text-xs text-slate-500 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
               <input type="text" id="senderAddress" placeholder="Address, City, Country, Postal Code" class="w-full text-xs text-slate-500 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
@@ -226,11 +226,11 @@
         </div>
 
         <!-- Bill To / Client Details Section -->
-        <div class="py-6 border-b border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div class="space-y-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Billed To</span>
-            <div class="space-y-1.5">
-              <input type="text" id="clientName" placeholder="Client Name or Company" class="w-full font-bold text-base text-slate-800 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
+        <div class="py-4 border-b border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Billed To</span>
+            <div class="space-y-1">
+              <input type="text" id="clientName" placeholder="Client Name or Company" class="w-full font-bold text-sm text-slate-800 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
               <input type="text" id="clientContact" placeholder="Contact Person / Department" class="w-full text-xs text-slate-600 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
               <input type="email" id="clientEmail" placeholder="client@company.com" class="w-full text-xs text-slate-500 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
               <input type="text" id="clientAddress" placeholder="Client Address, City, Country" class="w-full text-xs text-slate-500 placeholder-slate-400 border-b border-transparent hover:border-slate-200 focus:border-indigo-500 focus:outline-none transition-colors">
@@ -238,28 +238,28 @@
           </div>
 
           <div class="space-y-2 sm:text-right flex flex-col justify-end">
-            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 sm:ml-auto max-w-xs w-full text-left">
-              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Amount Due</span>
-              <div class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-baseline space-x-1">
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 sm:ml-auto max-w-xs w-full text-left">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Total Amount Due</span>
+              <div class="text-2xl font-black text-slate-900 tracking-tight flex items-baseline space-x-1">
                 <span class="currency-symbol">$</span>
                 <span id="headerTotalDue">0.00</span>
               </div>
-              <span class="text-[11px] text-slate-400 block mt-0.5" id="dueNoticeText">Due upon receipt</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5" id="dueNoticeText">Due upon receipt</span>
             </div>
           </div>
         </div>
 
         <!-- Line Items Table -->
-        <div class="py-6 space-y-4">
+        <div class="py-4 space-y-3">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse" id="itemsTable">
               <thead>
                 <tr class="border-b-2 border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                  <th class="py-3 px-2 w-[45%]">Description</th>
-                  <th class="py-3 px-2 text-right w-[15%]">Qty / Hrs</th>
-                  <th class="py-3 px-2 text-right w-[18%]">Rate (<span class="currency-symbol">$</span>)</th>
-                  <th class="py-3 px-2 text-right w-[17%]">Amount (<span class="currency-symbol">$</span>)</th>
-                  <th class="py-3 px-2 text-center w-[5%] print:hidden"></th>
+                  <th class="py-2 px-2 w-[45%]">Description</th>
+                  <th class="py-2 px-2 text-right w-[15%]">Qty / Hrs</th>
+                  <th class="py-2 px-2 text-right w-[18%]">Rate (<span class="currency-symbol">$</span>)</th>
+                  <th class="py-2 px-2 text-right w-[17%]">Amount (<span class="currency-symbol">$</span>)</th>
+                  <th class="py-2 px-2 text-center w-[5%] print:hidden"></th>
                 </tr>
               </thead>
               <tbody id="itemsTableBody" class="divide-y divide-slate-100 text-sm">
@@ -270,8 +270,8 @@
 
           <!-- Add Line Item Button -->
           <div class="print:hidden flex items-center space-x-3">
-            <button id="addItemBtn" type="button" class="inline-flex items-center px-3.5 py-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
-              <i data-lucide="plus-circle" class="w-4 h-4 mr-1.5"></i> Add Line Item
+            <button id="addItemBtn" type="button" class="inline-flex items-center px-3 py-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5 mr-1.5"></i> Add Line Item
             </button>
             <button id="addPresetItemBtn" type="button" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
               <i data-lucide="list-plus" class="w-3.5 h-3.5 mr-1.5"></i> Common Presets
@@ -280,22 +280,22 @@
         </div>
 
         <!-- Calculations & Summary Block -->
-        <div class="py-6 border-t border-slate-100 grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="py-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-12 gap-5">
           <!-- Left: Payment details & Instructions -->
-          <div class="md:col-span-7 space-y-4">
+          <div class="md:col-span-7 space-y-3">
             <div>
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Payment Instructions</span>
-              <textarea id="paymentNotes" rows="3" placeholder="Bank Transfer / Wire:&#10;Bank: Example Bank | Account: 123456789 | SWIFT: EXAMPUS33&#10;PayPal: payments@yourdomain.com" class="w-full text-xs text-slate-600 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 leading-relaxed"></textarea>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Payment Instructions</span>
+              <textarea id="paymentNotes" rows="2" placeholder="Bank Transfer / Wire:&#10;Bank: Example Bank | Account: 123456789 | SWIFT: EXAMPUS33&#10;PayPal: payments@yourdomain.com" class="w-full text-xs text-slate-600 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 leading-relaxed"></textarea>
             </div>
 
             <div>
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Terms & Notes</span>
-              <textarea id="invoiceTerms" rows="2" placeholder="Payment due within 14 days. Thank you for your business!" class="w-full text-xs text-slate-500 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 leading-relaxed"></textarea>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Terms & Notes</span>
+              <textarea id="invoiceTerms" rows="2" placeholder="Payment due within 14 days. Thank you for your business!" class="w-full text-xs text-slate-500 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 leading-relaxed"></textarea>
             </div>
           </div>
 
           <!-- Right: Totals Breakdown -->
-          <div class="md:col-span-5 space-y-2.5 bg-slate-50/70 rounded-2xl p-4 border border-slate-100">
+          <div class="md:col-span-5 space-y-2 bg-slate-50/70 rounded-2xl p-3.5 border border-slate-100">
             <!-- Subtotal -->
             <div class="flex justify-between text-xs text-slate-600">
               <span>Subtotal:</span>
@@ -334,9 +334,9 @@
               <span class="font-semibold text-slate-800"><span class="currency-symbol">$</span><span id="extraFeeDisplay">0.00</span></span>
             </div>
 
-            <div class="border-t-2 border-slate-200 pt-2.5 flex justify-between items-baseline">
-              <span class="text-sm font-bold text-slate-900">Total:</span>
-              <span class="text-xl font-extrabold text-slate-900"><span class="currency-symbol">$</span><span id="grandTotalDisplay">0.00</span></span>
+            <div class="border-t border-slate-200 pt-2 flex justify-between items-baseline">
+              <span class="text-xs font-bold text-slate-900">Total:</span>
+              <span class="text-lg font-extrabold text-slate-900"><span class="currency-symbol">$</span><span id="grandTotalDisplay">0.00</span></span>
             </div>
 
             <!-- Amount Paid / Balance Due -->
@@ -348,29 +348,29 @@
               <span class="text-slate-600">- <span class="currency-symbol">$</span><span id="paidDisplay">0.00</span></span>
             </div>
 
-            <div class="bg-indigo-600 text-white rounded-xl p-3 flex justify-between items-center shadow-md shadow-indigo-100 theme-accent-bg" id="balanceDueBox">
+            <div class="bg-indigo-600 text-white rounded-xl p-2.5 flex justify-between items-center shadow-md shadow-indigo-100 theme-accent-bg" id="balanceDueBox">
               <span class="text-xs font-bold uppercase tracking-wider">Balance Due</span>
-              <span class="text-lg font-black tracking-tight"><span class="currency-symbol">$</span><span id="balanceDueDisplay">0.00</span></span>
+              <span class="text-base font-black tracking-tight"><span class="currency-symbol">$</span><span id="balanceDueDisplay">0.00</span></span>
             </div>
           </div>
         </div>
 
         <!-- Signature Section -->
-        <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-end gap-6">
-          <div class="text-[11px] text-slate-400 space-y-1">
+        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-end gap-4">
+          <div class="text-[11px] text-slate-400 space-y-0.5">
             <p>Questions? Contact us at <span id="footerEmailText" class="font-medium text-slate-600">your email</span></p>
           </div>
 
-          <div class="text-center sm:text-right space-y-1 w-52">
-            <div class="border-b border-slate-300 pb-1">
-              <input type="text" id="signatureText" placeholder="Sign your name" class="w-full text-center sm:text-right font-signature text-2xl text-indigo-700 placeholder-slate-300 focus:outline-none bg-transparent">
+          <div class="text-center sm:text-right space-y-0.5 w-48">
+            <div class="border-b border-slate-300 pb-0.5">
+              <input type="text" id="signatureText" placeholder="Sign your name" class="w-full text-center sm:text-right font-signature text-xl text-indigo-700 placeholder-slate-300 focus:outline-none bg-transparent">
             </div>
-            <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block">Authorized Signature</span>
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">Authorized Signature</span>
           </div>
         </div>
 
         <!-- Watermark / Footer -->
-        <div id="invoiceWatermark" class="text-center pt-8 border-t border-slate-100 mt-8 text-[11px] text-slate-400 flex items-center justify-center space-x-1">
+        <div id="invoiceWatermark" class="text-center pt-4 border-t border-slate-100 mt-4 text-[10px] text-slate-400 flex items-center justify-center space-x-1">
           <span>Created with</span>
           <span class="font-bold text-indigo-600">Invoicely</span>
           <span>— Free Freelance Tool</span>

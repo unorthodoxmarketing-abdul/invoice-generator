@@ -104,8 +104,12 @@ input[type=number] {
   padding-bottom: 6px !important;
 }
 
-.exporting-pdf textarea {
-  resize: none !important;
+.exporting-pdf input,
+.exporting-pdf textarea,
+.exporting-pdf select {
+  border-color: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
 }
 
 .exporting-pdf,
