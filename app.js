@@ -699,26 +699,45 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- PDF GENERATION ---
 
   function generatePDF() {
-    showToast('Generating high-resolution PDF...', 'info');
+    showToast('Generating single-page PDF...', 'info');
 
     const invoiceElement = document.getElementById('invoiceCanvas');
     const invoiceNum = document.getElementById('invoiceNumber').value || 'Invoice';
     const clientName = document.getElementById('clientName').value || 'Client';
 
+    // Apply compact export mode
+    invoiceElement.classList.add('exporting-pdf');
+
     const opt = {
-      margin: [10, 10, 10, 10],
+      margin: [6, 6, 6, 6],
       filename: `${invoiceNum}_${clientName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, letterRendering: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      html2canvas: { 
+        scale: 2, 
+        useCORS: true, 
+        letterRendering: true, 
+        logging: false,
+        scrollY: 0
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
-    html2pdf().set(opt).from(invoiceElement).save().then(() => {
-      showToast('PDF downloaded successfully!', 'success');
-    }).catch(err => {
-      console.error(err);
-      showToast('Error generating PDF. You can also use the Print button to Save as PDF.', 'error');
-    });
+    html2pdf()
+      .set(opt)
+      .from(invoiceElement)
+      .save()
+      .then(() => {
+        showToast('PDF downloaded successfully on 1 page!', 'success');
+      })
+      .catch(err => {
+        console.error(err);
+        showToast('Error generating PDF. You can also use the Print button to Save as PDF.', 'error');
+      })
+      .finally(() => {
+        // Revert export styles
+        invoiceElement.classList.remove('exporting-pdf');
+      });
   }
 
   // --- TOAST NOTIFICATIONS & HELPERS ---

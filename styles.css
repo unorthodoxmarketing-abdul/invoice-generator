@@ -68,12 +68,64 @@ input[type=number] {
   background-color: #e11d48 !important;
 }
 
+/* PDF Export Mode & Print-Fit Rules */
+.exporting-pdf {
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 20px 24px !important;
+  width: 100% !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  background: white !important;
+}
+
+.exporting-pdf .pb-8,
+.exporting-pdf .py-6 {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.exporting-pdf .pt-8,
+.exporting-pdf .pt-6 {
+  padding-top: 10px !important;
+  margin-top: 10px !important;
+}
+
+.exporting-pdf .space-y-4 > :not([hidden]) ~ :not([hidden]),
+.exporting-pdf .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0 !important;
+  margin-top: 8px !important;
+}
+
+.exporting-pdf table th,
+.exporting-pdf table td {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+.exporting-pdf textarea {
+  resize: none !important;
+}
+
+.exporting-pdf,
+.exporting-pdf * {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
 /* Print Specific Rules for Clean PDF and Paper Output */
+@page {
+  size: A4 portrait;
+  margin: 8mm;
+}
+
 @media print {
   body {
     background: white !important;
     color: black !important;
     padding: 0 !important;
+    margin: 0 !important;
   }
   
   header, footer, aside, .print\:hidden, #toastContainer, #historyModal {
@@ -91,6 +143,8 @@ input[type=number] {
     border: none !important;
     padding: 0 !important;
     width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   input, textarea, select {
