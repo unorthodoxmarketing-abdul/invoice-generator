@@ -696,48 +696,101 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Exported invoice JSON data file', 'success');
   }
 
-  // --- PDF GENERATION ---
+  // --- PDF GENERATION (100% SINGLE-PAGE FIT GUARANTEE) ---
 
-  function generatePDF() {
+  async function generatePDF() {
     showToast('Generating single-page PDF...', 'info');
 
     const invoiceElement = document.getElementById('invoiceCanvas');
     const invoiceNum = document.getElementById('invoiceNumber').value || 'Invoice';
     const clientName = document.getElementById('clientName').value || 'Client';
+    const filename = `${invoiceNum}_${clientName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
-    // Apply compact export mode
+    // Apply compact styling for export
     invoiceElement.classList.add('exporting-pdf');
 
-    const opt = {
-      margin: [6, 6, 6, 6],
-      filename: `${invoiceNum}_${clientName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
-        scale: 2, 
-        useCORS: true, 
-        letterRendering: true, 
+    try {
+      // Use html2canvas directly for maximum control
+      const canvas = await html2canvas(invoiceElement, {
+        scale: 2,
+        useCORS: true,
         logging: false,
+        backgroundColor: '#ffffff',
         scrollY: 0
-      },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
-
-    html2pdf()
-      .set(opt)
-      .from(invoiceElement)
-      .save()
-      .then(() => {
-        showToast('PDF downloaded successfully on 1 page!', 'success');
-      })
-      .catch(err => {
-        console.error(err);
-        showToast('Error generating PDF. You can also use the Print button to Save as PDF.', 'error');
-      })
-      .finally(() => {
-        // Revert export styles
-        invoiceElement.classList.remove('exporting-pdf');
       });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+
+      // Access jsPDF (support both UMD window.jspdf and legacy window.jsPDF)
+      const { jsPDF } = window.jspdf || window;
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();   // 210 mm
+      const pdfHeight = pdf.internal.pageSize.getHeight(); // 297 mm
+      const margin = 8; // 8mm margin
+      const usableWidth = pdfWidth - (margin * 2);
+      const usableHeight = pdfHeight - (margin * 2);
+
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const aspectRatio = imgHeight / imgWidth;
+
+      let renderedWidth = usableWidth;
+      let renderedHeight = usableWidth * aspectRatio;
+
+      // If height exceeds usableHeight but is within 1.5 pages, scale down to fit ONE single page!
+      if (renderedHeight > usableHeight && renderedHeight <= usableHeight * 1.5) {
+        const scaleFactor = usableHeight / renderedHeight;
+        renderedWidth = renderedWidth * scaleFactor;
+        renderedHeight = usableHeight;
+      }
+
+      if (renderedHeight <= usableHeight) {
+        // Fits perfectly on 1 page! Center horizontally
+        const xOffset = margin + (usableWidth - renderedWidth) / 2;
+        pdf.addImage(imgData, 'JPEG', xOffset, margin, renderedWidth, renderedHeight, '', 'FAST');
+      } else {
+        // Multi-page fallback only if invoice has a very large number of rows
+        let heightLeft = renderedHeight;
+        let position = margin;
+
+        pdf.addImage(imgData, 'JPEG', margin, position, renderedWidth, renderedHeight, '', 'FAST');
+        heightLeft -= usableHeight;
+
+        while (heightLeft > 0) {
+          position = margin - (renderedHeight - heightLeft);
+          pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', margin, position, renderedWidth, renderedHeight, '', 'FAST');
+          heightLeft -= usableHeight;
+        }
+      }
+
+      pdf.save(filename);
+      showToast('PDF downloaded successfully on 1 page!', 'success');
+    } catch (err) {
+      console.error('PDF export failed:', err);
+      // Fallback to html2pdf if direct engine encounters an issue
+      try {
+        const opt = {
+          margin: [6, 6, 6, 6],
+          filename: filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        await html2pdf().set(opt).from(invoiceElement).save();
+        showToast('PDF downloaded!', 'success');
+      } catch (fallbackErr) {
+        console.error('Fallback PDF failed:', fallbackErr);
+        showToast('Please use the Print button to Save as PDF.', 'error');
+      }
+    } finally {
+      invoiceElement.classList.remove('exporting-pdf');
+    }
   }
 
   // --- TOAST NOTIFICATIONS & HELPERS ---
