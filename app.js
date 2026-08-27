@@ -766,90 +766,202 @@ document.addEventListener('DOMContentLoaded', () => {
       PAID:'#059669', OVERDUE:'#e11d48', DRAFT:'#64748b', PENDING: accent
     }[document.getElementById('statusSelector').value] || accent;
 
-    // ---- Build the clean print HTML ----
+    // ---- Build the professional PDF HTML ----
+    const accentDark = accent; // use same accent for consistency
+
     const html = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{
-      font-family:'Segoe UI',Arial,sans-serif;
-      font-size:11px;
-      color:#1e293b;
-      background:#fff;
-      padding:24px 28px;
-      width:794px;
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 11.5px;
+      color: #1e293b;
+      background: #fff;
+      width: 794px;
     }
-    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #f1f5f9;}
-    .sender-name{font-size:15px;font-weight:800;color:#0f172a;margin-bottom:3px;}
-    .sender-info{color:#64748b;font-size:10px;line-height:1.6;}
-    .invoice-title{font-size:28px;font-weight:900;letter-spacing:-0.5px;color:${accent};text-transform:uppercase;}
-    .meta-table{margin-top:8px;font-size:10px;}
-    .meta-table td{padding:2px 0;color:#475569;}
-    .meta-table td:first-child{color:#94a3b8;padding-right:12px;white-space:nowrap;}
-    .meta-table td:last-child{font-weight:600;color:#0f172a;text-align:right;}
-    .bill-section{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #f1f5f9;}
-    .billed-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#94a3b8;margin-bottom:4px;}
-    .client-name{font-size:13px;font-weight:800;color:#0f172a;margin-bottom:2px;}
-    .client-info{font-size:10px;color:#64748b;line-height:1.5;}
-    .amount-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;text-align:right;min-width:160px;}
-    .amount-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#94a3b8;}
-    .amount-value{font-size:20px;font-weight:900;color:#0f172a;margin-top:2px;}
-    table.items{width:100%;border-collapse:collapse;margin-bottom:14px;}
-    table.items thead tr{border-bottom:2px solid #e2e8f0;}
-    table.items thead th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#94a3b8;padding:6px;text-align:left;}
-    table.items thead th.r{text-align:right;}
-    table.items tbody td{font-size:10.5px;color:#334155;vertical-align:top;}
-    .bottom{display:flex;justify-content:space-between;gap:20px;margin-top:2px;}
-    .notes-col{flex:1;}
-    .notes-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#94a3b8;margin-bottom:4px;}
-    .notes-text{font-size:10px;color:#475569;line-height:1.6;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px;white-space:pre-wrap;}
-    .totals-col{min-width:210px;}
-    .totals-row{display:flex;justify-content:space-between;font-size:10.5px;color:#64748b;padding:3px 0;border-bottom:1px solid #f1f5f9;}
-    .totals-row span:last-child{font-weight:600;color:#0f172a;}
-    .totals-grand{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#0f172a;padding:6px 0;border-top:2px solid #e2e8f0;margin-top:2px;}
-    .balance-box{background:${accent};color:#fff;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
-    .balance-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
-    .balance-value{font-size:14px;font-weight:900;}
-    .footer-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;padding-top:10px;border-top:1px solid #f1f5f9;}
-    .contact-note{font-size:9px;color:#94a3b8;}
-    .sig-line{border-top:1px solid #cbd5e1;padding-top:4px;text-align:right;min-width:140px;}
-    .sig-name{font-family:Georgia,serif;font-style:italic;font-size:17px;color:${accent};font-weight:600;}
-    .sig-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#94a3b8;margin-top:2px;}
-    .watermark{text-align:center;font-size:8.5px;color:#cbd5e1;margin-top:10px;}
-    .ribbon{position:absolute;top:12px;right:-18px;background:${statusColor};color:#fff;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:4px 28px;transform:rotate(45deg);}
-    .header-right-wrap{position:relative;overflow:hidden;text-align:right;}
-    .discount-neg{color:#059669;}
+
+    /* ===== TOP HEADER BAND ===== */
+    .top-band {
+      background: ${accentDark};
+      padding: 26px 32px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .top-band-left { color: rgba(255,255,255,0.92); }
+    .business-name { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.3px; margin-bottom: 4px; }
+    .business-sub  { font-size: 10px; color: rgba(255,255,255,0.75); line-height: 1.7; }
+    .top-band-right { text-align: right; }
+    .invoice-label {
+      font-size: 32px; font-weight: 900; color: #fff; letter-spacing: -1px;
+      text-transform: uppercase; line-height: 1; margin-bottom: 10px;
+    }
+    .status-pill {
+      display: inline-block;
+      background: rgba(255,255,255,0.22);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.35);
+      margin-bottom: 6px;
+    }
+    .meta-grid { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; margin-top: 4px; }
+    .meta-row  { display: flex; gap: 10px; font-size: 10px; }
+    .meta-row span:first-child { color: rgba(255,255,255,0.6); }
+    .meta-row span:last-child  { color: #fff; font-weight: 600; }
+
+    /* ===== BILL-TO + DUE STRIP ===== */
+    .info-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      padding: 18px 32px 16px;
+      border-bottom: 1px solid #e8edf4;
+    }
+    .billed-label {
+      font-size: 8.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: #94a3b8; margin-bottom: 5px;
+    }
+    .client-name  { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 3px; }
+    .client-info  { font-size: 10px; color: #64748b; line-height: 1.65; }
+    .due-box {
+      text-align: right;
+      background: #f8fafc;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      padding: 12px 18px;
+      min-width: 170px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .due-label { font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; margin-bottom: 4px; }
+    .due-amount { font-size: 22px; font-weight: 900; color: ${accentDark}; letter-spacing: -0.5px; }
+    .due-date   { font-size: 9px; color: #94a3b8; margin-top: 3px; }
+
+    /* ===== LINE ITEMS TABLE ===== */
+    .table-wrap { padding: 0 32px; margin-top: 14px; }
+    table.items { width: 100%; border-collapse: collapse; }
+    table.items thead tr {
+      background: #f8fafc;
+      border-radius: 6px;
+    }
+    table.items thead th {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: #94a3b8;
+      padding: 8px 10px; text-align: left;
+    }
+    table.items thead th:not(:first-child) { text-align: right; }
+    table.items thead th:first-child { border-radius: 6px 0 0 6px; padding-left: 12px; }
+    table.items thead th:last-child  { border-radius: 0 6px 6px 0; padding-right: 12px; }
+    table.items tbody tr { border-bottom: 1px solid #f1f5f9; }
+    table.items tbody tr:last-child { border-bottom: 2px solid #e2e8f0; }
+    table.items tbody td {
+      padding: 9px 10px;
+      font-size: 10.5px; color: #334155; vertical-align: top;
+    }
+    table.items tbody td:first-child {
+      font-weight: 500; color: #0f172a; padding-left: 12px;
+      max-width: 320px; word-wrap: break-word;
+    }
+    table.items tbody td:not(:first-child) { text-align: right; white-space: nowrap; }
+    table.items tbody td:last-child { font-weight: 700; color: #0f172a; padding-right: 12px; }
+
+    /* ===== BOTTOM SECTION ===== */
+    .bottom-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 14px 32px 0;
+      gap: 24px;
+    }
+    .notes-col { flex: 1; min-width: 0; }
+    .notes-section-label {
+      font-size: 8.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: #94a3b8; margin-bottom: 5px;
+      border-left: 3px solid ${accentDark}; padding-left: 7px;
+    }
+    .notes-body {
+      font-size: 10px; color: #475569; line-height: 1.7;
+      white-space: pre-wrap; word-wrap: break-word;
+    }
+    .notes-divider { border: none; border-top: 1px dashed #e2e8f0; margin: 10px 0; }
+
+    /* ===== TOTALS ===== */
+    .totals-col { min-width: 220px; }
+    .t-row {
+      display: flex; justify-content: space-between;
+      font-size: 10.5px; color: #64748b;
+      padding: 4px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    .t-row .t-val { font-weight: 600; color: #1e293b; }
+    .t-row .t-neg { font-weight: 600; color: #10b981; }
+    .t-grand {
+      display: flex; justify-content: space-between;
+      font-size: 13px; font-weight: 800; color: #0f172a;
+      padding: 7px 0; border-bottom: 2px solid #e2e8f0;
+    }
+    .t-balance {
+      background: ${accentDark};
+      color: #fff;
+      border-radius: 8px;
+      padding: 9px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 8px;
+    }
+    .t-balance-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.85; }
+    .t-balance-val   { font-size: 15px; font-weight: 900; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding: 14px 32px 18px;
+      margin-top: 10px;
+      border-top: 1px solid #e8edf4;
+    }
+    .footer-left { font-size: 9px; color: #94a3b8; line-height: 1.7; }
+    .footer-left strong { color: #64748b; }
+    .sig-block { text-align: right; }
+    .sig-name  { font-family: Georgia, serif; font-style: italic; font-size: 20px; color: ${accentDark}; font-weight: 600; line-height: 1.1; }
+    .sig-line  { width: 160px; border-top: 1px solid #cbd5e1; margin: 4px 0 3px auto; }
+    .sig-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; }
+
+    .watermark { text-align: center; font-size: 8px; color: #cbd5e1; padding-bottom: 10px; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div>
-      ${logoHTML ? `<div style="margin-bottom:8px;">${logoHTML}</div>` : ''}
-      <div class="sender-name">${escapeHtml(senderName)}</div>
-      <div class="sender-info">
-        ${senderTitle    ? escapeHtml(senderTitle) + '<br>'    : ''}
-        ${senderEmailV   ? escapeHtml(senderEmailV) + '<br>'   : ''}
-        ${senderAddress  ? escapeHtml(senderAddress) + '<br>'  : ''}
-        ${senderTaxId    ? escapeHtml(senderTaxId)              : ''}
+
+  <!-- TOP BAND -->
+  <div class="top-band">
+    <div class="top-band-left">
+      ${logoHTML ? `<div style="margin-bottom:10px;">${logoHTML.replace('max-width:110px', 'max-width:90px;filter:brightness(0) invert(1);opacity:0.9')}</div>` : ''}
+      <div class="business-name">${escapeHtml(senderName) || 'Your Business Name'}</div>
+      <div class="business-sub">
+        ${senderTitle   ? escapeHtml(senderTitle)   + '<br>' : ''}
+        ${senderEmailV  ? escapeHtml(senderEmailV)  + '<br>' : ''}
+        ${senderAddress ? escapeHtml(senderAddress) + '<br>' : ''}
+        ${senderTaxId   ? escapeHtml(senderTaxId)           : ''}
       </div>
     </div>
-    <div class="header-right-wrap">
-      <div style="overflow:hidden;position:relative;padding-right:0;width:180px;height:36px;">
-        <div class="ribbon">${escapeHtml(document.getElementById('statusSelector').value)}</div>
+    <div class="top-band-right">
+      <div class="invoice-label">Invoice</div>
+      <div class="status-pill">${escapeHtml(document.getElementById('statusSelector').value)}</div>
+      <div class="meta-grid">
+        <div class="meta-row"><span>Invoice #:</span><span>${escapeHtml(invoiceNum)}</span></div>
+        ${invDate  ? `<div class="meta-row"><span>Issue Date:</span><span>${escapeHtml(invDate)}</span></div>`   : ''}
+        ${dueDate  ? `<div class="meta-row"><span>Due Date:</span><span>${escapeHtml(dueDate)}</span></div>`     : ''}
+        ${poNumber ? `<div class="meta-row"><span>PO / Ref #:</span><span>${escapeHtml(poNumber)}</span></div>` : ''}
       </div>
-      <div class="invoice-title">INVOICE</div>
-      <table class="meta-table" style="margin-left:auto;">
-        <tr><td>Invoice #:</td><td>${escapeHtml(invoiceNum)}</td></tr>
-        ${invDate  ? `<tr><td>Issue Date:</td><td>${escapeHtml(invDate)}</td></tr>`  : ''}
-        ${dueDate  ? `<tr><td>Due Date:</td><td>${escapeHtml(dueDate)}</td></tr>`    : ''}
-        ${poNumber ? `<tr><td>PO / Ref #:</td><td>${escapeHtml(poNumber)}</td></tr>` : ''}
-      </table>
     </div>
   </div>
 
-  <div class="bill-section">
+  <!-- BILL-TO + DUE -->
+  <div class="info-strip">
     <div>
       <div class="billed-label">Billed To</div>
       <div class="client-name">${escapeHtml(clientName)}</div>
@@ -859,54 +971,71 @@ document.addEventListener('DOMContentLoaded', () => {
         ${clientAddress ? escapeHtml(clientAddress)          : ''}
       </div>
     </div>
-    <div class="amount-box">
-      <div class="amount-label">Balance Due</div>
-      <div class="amount-value" style="color:${accent};">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</div>
-      ${dueDate ? `<div style="font-size:9px;color:#94a3b8;margin-top:2px;">Due ${escapeHtml(dueDate)}</div>` : ''}
+    <div class="due-box">
+      <div class="due-label">Balance Due</div>
+      <div class="due-amount">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</div>
+      ${dueDate ? `<div class="due-date">Due ${escapeHtml(dueDate)}</div>` : ''}
     </div>
   </div>
 
-  <table class="items">
-    <thead>
-      <tr>
-        <th style="width:48%;">Description</th>
-        <th class="r" style="width:13%;">Qty / Hrs</th>
-        <th class="r" style="width:17%;">Rate (${escapeHtml(currentCurrency)})</th>
-        <th class="r" style="width:22%;">Amount (${escapeHtml(currentCurrency)})</th>
-      </tr>
-    </thead>
-    <tbody>${itemsHTML}</tbody>
-  </table>
+  <!-- LINE ITEMS -->
+  <div class="table-wrap">
+    <table class="items">
+      <thead>
+        <tr>
+          <th style="width:50%;">Description</th>
+          <th style="width:12%;">Qty / Hrs</th>
+          <th style="width:18%;">Rate (${escapeHtml(currentCurrency)})</th>
+          <th style="width:20%;">Amount (${escapeHtml(currentCurrency)})</th>
+        </tr>
+      </thead>
+      <tbody>${itemsHTML}</tbody>
+    </table>
+  </div>
 
-  <div class="bottom">
+  <!-- BOTTOM: NOTES + TOTALS -->
+  <div class="bottom-strip">
     <div class="notes-col">
-      ${paymentNotes ? `<div class="notes-label">Payment Instructions</div><div class="notes-text">${escapeHtml(paymentNotes)}</div>` : ''}
-      ${invoiceTerms ? `<div class="notes-label" style="margin-top:8px;">Terms &amp; Notes</div><div class="notes-text">${escapeHtml(invoiceTerms)}</div>` : ''}
+      ${paymentNotes ? `
+        <div class="notes-section-label">Payment Instructions</div>
+        <div class="notes-body">${escapeHtml(paymentNotes)}</div>
+      ` : ''}
+      ${paymentNotes && invoiceTerms ? '<hr class="notes-divider">' : ''}
+      ${invoiceTerms ? `
+        <div class="notes-section-label">Terms &amp; Notes</div>
+        <div class="notes-body">${escapeHtml(invoiceTerms)}</div>
+      ` : ''}
     </div>
     <div class="totals-col">
-      <div class="totals-row"><span>Subtotal:</span><span>${currentCurrency}${formatNumber(subtotal.toFixed(2))}</span></div>
-      ${discountAmt > 0 ? `<div class="totals-row"><span>Discount:</span><span class="discount-neg">- ${currentCurrency}${formatNumber(discountAmt.toFixed(2))}</span></div>` : ''}
-      ${taxAmt > 0      ? `<div class="totals-row"><span>Tax / VAT (${taxRateV}%):</span><span>${currentCurrency}${formatNumber(taxAmt.toFixed(2))}</span></div>` : ''}
-      ${extraFeeV > 0   ? `<div class="totals-row"><span>Shipping / Extra:</span><span>${currentCurrency}${formatNumber(extraFeeV.toFixed(2))}</span></div>` : ''}
-      <div class="totals-grand"><span>Total:</span><span>${currentCurrency}${formatNumber(grandTotal.toFixed(2))}</span></div>
-      ${paidAmt > 0 ? `<div class="totals-row"><span>Amount Paid:</span><span>- ${currentCurrency}${formatNumber(paidAmt.toFixed(2))}</span></div>` : ''}
-      <div class="balance-box">
-        <span class="balance-label">Balance Due</span>
-        <span class="balance-value">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</span>
+      <div class="t-row"><span>Subtotal</span><span class="t-val">${currentCurrency}${formatNumber(subtotal.toFixed(2))}</span></div>
+      ${discountAmt > 0 ? `<div class="t-row"><span>Discount</span><span class="t-neg">− ${currentCurrency}${formatNumber(discountAmt.toFixed(2))}</span></div>` : ''}
+      ${taxAmt > 0      ? `<div class="t-row"><span>Tax / VAT (${taxRateV}%)</span><span class="t-val">${currentCurrency}${formatNumber(taxAmt.toFixed(2))}</span></div>` : ''}
+      ${extraFeeV > 0   ? `<div class="t-row"><span>Shipping / Extra</span><span class="t-val">${currentCurrency}${formatNumber(extraFeeV.toFixed(2))}</span></div>` : ''}
+      <div class="t-grand"><span>Total</span><span>${currentCurrency}${formatNumber(grandTotal.toFixed(2))}</span></div>
+      ${paidAmt > 0 ? `<div class="t-row"><span>Amount Paid</span><span class="t-neg">− ${currentCurrency}${formatNumber(paidAmt.toFixed(2))}</span></div>` : ''}
+      <div class="t-balance">
+        <span class="t-balance-label">Balance Due</span>
+        <span class="t-balance-val">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</span>
       </div>
     </div>
   </div>
 
-  <div class="footer-row">
-    <div class="contact-note">${senderEmailV ? `Questions? <strong>${escapeHtml(senderEmailV)}</strong>` : ''}</div>
+  <!-- FOOTER: CONTACT + SIGNATURE -->
+  <div class="footer">
+    <div class="footer-left">
+      ${senderEmailV ? `Questions? Contact us at <strong>${escapeHtml(senderEmailV)}</strong>` : ''}
+      ${senderName   ? `<br><strong>${escapeHtml(senderName)}</strong>` : ''}
+    </div>
     ${signatureText ? `
-    <div class="sig-line">
+    <div class="sig-block">
       <div class="sig-name">${escapeHtml(signatureText)}</div>
+      <div class="sig-line"></div>
       <div class="sig-label">Authorized Signature</div>
     </div>` : ''}
   </div>
 
-  ${showWatermark ? `<div class="watermark">Created with <strong style="color:#6366f1;">Invoicely</strong> — Free Freelance Invoice Generator</div>` : ''}
+  ${showWatermark ? `<div class="watermark">Generated by <strong style="color:#818cf8;">Invoicely</strong> — Free Professional Invoice Generator</div>` : ''}
+
 </body>
 </html>`;
 
