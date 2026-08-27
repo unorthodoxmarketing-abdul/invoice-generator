@@ -696,100 +696,267 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Exported invoice JSON data file', 'success');
   }
 
-  // --- PDF GENERATION (100% SINGLE-PAGE FIT GUARANTEE) ---
+  // --- PDF GENERATION — Clean Template Approach ---
 
   async function generatePDF() {
-    showToast('Generating single-page PDF...', 'info');
+    showToast('Generating PDF...', 'info');
 
-    const invoiceElement = document.getElementById('invoiceCanvas');
-    const invoiceNum = document.getElementById('invoiceNumber').value || 'Invoice';
-    const clientName = document.getElementById('clientName').value || 'Client';
-    const filename = `${invoiceNum}_${clientName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+    const invoiceNum  = document.getElementById('invoiceNumber').value  || 'Invoice';
+    const clientName  = document.getElementById('clientName').value     || 'Client';
+    const filename    = `${invoiceNum}_${clientName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+    const accent      = currentAccentColor;
 
-    // Apply compact styling for export
-    invoiceElement.classList.add('exporting-pdf');
+    // ---- Collect all data ----
+    const senderName    = document.getElementById('senderName').value;
+    const senderTitle   = document.getElementById('senderTitle').value;
+    const senderEmailV  = document.getElementById('senderEmail').value;
+    const senderAddress = document.getElementById('senderAddress').value;
+    const senderTaxId   = document.getElementById('senderTaxId').value;
+
+    const invDate   = document.getElementById('invoiceDate').value;
+    const dueDate   = document.getElementById('dueDate').value;
+    const poNumber  = document.getElementById('poNumber').value;
+
+    const clientContact = document.getElementById('clientContact').value;
+    const clientEmail   = document.getElementById('clientEmail').value;
+    const clientAddress = document.getElementById('clientAddress').value;
+
+    const paymentNotes  = document.getElementById('paymentNotes').value;
+    const invoiceTerms  = document.getElementById('invoiceTerms').value;
+    const signatureText = document.getElementById('signatureText').value;
+
+    const showWatermark = document.getElementById('poweredByToggle').checked;
+
+    // ---- Build items rows ----
+    let itemsHTML = '';
+    let subtotal  = 0;
+    document.querySelectorAll('#itemsTableBody tr').forEach(row => {
+      const desc  = row.querySelector('.item-desc')?.value  || '';
+      const qty   = parseFloat(row.querySelector('.item-qty')?.value)  || 0;
+      const rate  = parseFloat(row.querySelector('.item-rate')?.value) || 0;
+      const total = qty * rate;
+      subtotal += total;
+      itemsHTML += `
+        <tr>
+          <td style="padding:7px 6px;border-bottom:1px solid #f1f5f9;">${escapeHtml(desc)}</td>
+          <td style="padding:7px 6px;border-bottom:1px solid #f1f5f9;text-align:right;">${qty}</td>
+          <td style="padding:7px 6px;border-bottom:1px solid #f1f5f9;text-align:right;">${currentCurrency}${formatNumber(rate.toFixed(2))}</td>
+          <td style="padding:7px 6px;border-bottom:1px solid #f1f5f9;text-align:right;font-weight:600;">${currentCurrency}${formatNumber(total.toFixed(2))}</td>
+        </tr>`;
+    });
+
+    // ---- Recalculate totals ----
+    const discType  = document.getElementById('discountType').value;
+    const discVal   = parseFloat(document.getElementById('discountValue').value) || 0;
+    const taxRateV  = parseFloat(document.getElementById('taxRate').value) || 0;
+    const extraFeeV = parseFloat(document.getElementById('extraFee').value) || 0;
+    const paidAmt   = parseFloat(document.getElementById('amountPaid').value) || 0;
+
+    const discountAmt = discType === 'percent' ? subtotal * discVal / 100 : discVal;
+    const discounted  = Math.max(0, subtotal - discountAmt);
+    const taxAmt      = discounted * taxRateV / 100;
+    const grandTotal  = discounted + taxAmt + extraFeeV;
+    const balanceDue  = Math.max(0, grandTotal - paidAmt);
+
+    const logoHTML = logoDataUrl
+      ? `<img src="${logoDataUrl}" style="max-width:110px;max-height:60px;object-fit:contain;" alt="Logo">`
+      : '';
+
+    const statusColor = {
+      PAID:'#059669', OVERDUE:'#e11d48', DRAFT:'#64748b', PENDING: accent
+    }[document.getElementById('statusSelector').value] || accent;
+
+    // ---- Build the clean print HTML ----
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family:'Segoe UI',Arial,sans-serif;
+      font-size:11px;
+      color:#1e293b;
+      background:#fff;
+      padding:24px 28px;
+      width:794px;
+    }
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #f1f5f9;}
+    .sender-name{font-size:15px;font-weight:800;color:#0f172a;margin-bottom:3px;}
+    .sender-info{color:#64748b;font-size:10px;line-height:1.6;}
+    .invoice-title{font-size:28px;font-weight:900;letter-spacing:-0.5px;color:${accent};text-transform:uppercase;}
+    .meta-table{margin-top:8px;font-size:10px;}
+    .meta-table td{padding:2px 0;color:#475569;}
+    .meta-table td:first-child{color:#94a3b8;padding-right:12px;white-space:nowrap;}
+    .meta-table td:last-child{font-weight:600;color:#0f172a;text-align:right;}
+    .bill-section{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #f1f5f9;}
+    .billed-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#94a3b8;margin-bottom:4px;}
+    .client-name{font-size:13px;font-weight:800;color:#0f172a;margin-bottom:2px;}
+    .client-info{font-size:10px;color:#64748b;line-height:1.5;}
+    .amount-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;text-align:right;min-width:160px;}
+    .amount-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#94a3b8;}
+    .amount-value{font-size:20px;font-weight:900;color:#0f172a;margin-top:2px;}
+    table.items{width:100%;border-collapse:collapse;margin-bottom:14px;}
+    table.items thead tr{border-bottom:2px solid #e2e8f0;}
+    table.items thead th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#94a3b8;padding:6px;text-align:left;}
+    table.items thead th.r{text-align:right;}
+    table.items tbody td{font-size:10.5px;color:#334155;vertical-align:top;}
+    .bottom{display:flex;justify-content:space-between;gap:20px;margin-top:2px;}
+    .notes-col{flex:1;}
+    .notes-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#94a3b8;margin-bottom:4px;}
+    .notes-text{font-size:10px;color:#475569;line-height:1.6;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px;white-space:pre-wrap;}
+    .totals-col{min-width:210px;}
+    .totals-row{display:flex;justify-content:space-between;font-size:10.5px;color:#64748b;padding:3px 0;border-bottom:1px solid #f1f5f9;}
+    .totals-row span:last-child{font-weight:600;color:#0f172a;}
+    .totals-grand{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#0f172a;padding:6px 0;border-top:2px solid #e2e8f0;margin-top:2px;}
+    .balance-box{background:${accent};color:#fff;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+    .balance-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
+    .balance-value{font-size:14px;font-weight:900;}
+    .footer-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;padding-top:10px;border-top:1px solid #f1f5f9;}
+    .contact-note{font-size:9px;color:#94a3b8;}
+    .sig-line{border-top:1px solid #cbd5e1;padding-top:4px;text-align:right;min-width:140px;}
+    .sig-name{font-family:Georgia,serif;font-style:italic;font-size:17px;color:${accent};font-weight:600;}
+    .sig-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#94a3b8;margin-top:2px;}
+    .watermark{text-align:center;font-size:8.5px;color:#cbd5e1;margin-top:10px;}
+    .ribbon{position:absolute;top:12px;right:-18px;background:${statusColor};color:#fff;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:4px 28px;transform:rotate(45deg);}
+    .header-right-wrap{position:relative;overflow:hidden;text-align:right;}
+    .discount-neg{color:#059669;}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      ${logoHTML ? `<div style="margin-bottom:8px;">${logoHTML}</div>` : ''}
+      <div class="sender-name">${escapeHtml(senderName)}</div>
+      <div class="sender-info">
+        ${senderTitle    ? escapeHtml(senderTitle) + '<br>'    : ''}
+        ${senderEmailV   ? escapeHtml(senderEmailV) + '<br>'   : ''}
+        ${senderAddress  ? escapeHtml(senderAddress) + '<br>'  : ''}
+        ${senderTaxId    ? escapeHtml(senderTaxId)              : ''}
+      </div>
+    </div>
+    <div class="header-right-wrap">
+      <div style="overflow:hidden;position:relative;padding-right:0;width:180px;height:36px;">
+        <div class="ribbon">${escapeHtml(document.getElementById('statusSelector').value)}</div>
+      </div>
+      <div class="invoice-title">INVOICE</div>
+      <table class="meta-table" style="margin-left:auto;">
+        <tr><td>Invoice #:</td><td>${escapeHtml(invoiceNum)}</td></tr>
+        ${invDate  ? `<tr><td>Issue Date:</td><td>${escapeHtml(invDate)}</td></tr>`  : ''}
+        ${dueDate  ? `<tr><td>Due Date:</td><td>${escapeHtml(dueDate)}</td></tr>`    : ''}
+        ${poNumber ? `<tr><td>PO / Ref #:</td><td>${escapeHtml(poNumber)}</td></tr>` : ''}
+      </table>
+    </div>
+  </div>
+
+  <div class="bill-section">
+    <div>
+      <div class="billed-label">Billed To</div>
+      <div class="client-name">${escapeHtml(clientName)}</div>
+      <div class="client-info">
+        ${clientContact ? escapeHtml(clientContact) + '<br>' : ''}
+        ${clientEmail   ? escapeHtml(clientEmail)   + '<br>' : ''}
+        ${clientAddress ? escapeHtml(clientAddress)          : ''}
+      </div>
+    </div>
+    <div class="amount-box">
+      <div class="amount-label">Balance Due</div>
+      <div class="amount-value" style="color:${accent};">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</div>
+      ${dueDate ? `<div style="font-size:9px;color:#94a3b8;margin-top:2px;">Due ${escapeHtml(dueDate)}</div>` : ''}
+    </div>
+  </div>
+
+  <table class="items">
+    <thead>
+      <tr>
+        <th style="width:48%;">Description</th>
+        <th class="r" style="width:13%;">Qty / Hrs</th>
+        <th class="r" style="width:17%;">Rate (${escapeHtml(currentCurrency)})</th>
+        <th class="r" style="width:22%;">Amount (${escapeHtml(currentCurrency)})</th>
+      </tr>
+    </thead>
+    <tbody>${itemsHTML}</tbody>
+  </table>
+
+  <div class="bottom">
+    <div class="notes-col">
+      ${paymentNotes ? `<div class="notes-label">Payment Instructions</div><div class="notes-text">${escapeHtml(paymentNotes)}</div>` : ''}
+      ${invoiceTerms ? `<div class="notes-label" style="margin-top:8px;">Terms &amp; Notes</div><div class="notes-text">${escapeHtml(invoiceTerms)}</div>` : ''}
+    </div>
+    <div class="totals-col">
+      <div class="totals-row"><span>Subtotal:</span><span>${currentCurrency}${formatNumber(subtotal.toFixed(2))}</span></div>
+      ${discountAmt > 0 ? `<div class="totals-row"><span>Discount:</span><span class="discount-neg">- ${currentCurrency}${formatNumber(discountAmt.toFixed(2))}</span></div>` : ''}
+      ${taxAmt > 0      ? `<div class="totals-row"><span>Tax / VAT (${taxRateV}%):</span><span>${currentCurrency}${formatNumber(taxAmt.toFixed(2))}</span></div>` : ''}
+      ${extraFeeV > 0   ? `<div class="totals-row"><span>Shipping / Extra:</span><span>${currentCurrency}${formatNumber(extraFeeV.toFixed(2))}</span></div>` : ''}
+      <div class="totals-grand"><span>Total:</span><span>${currentCurrency}${formatNumber(grandTotal.toFixed(2))}</span></div>
+      ${paidAmt > 0 ? `<div class="totals-row"><span>Amount Paid:</span><span>- ${currentCurrency}${formatNumber(paidAmt.toFixed(2))}</span></div>` : ''}
+      <div class="balance-box">
+        <span class="balance-label">Balance Due</span>
+        <span class="balance-value">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-row">
+    <div class="contact-note">${senderEmailV ? `Questions? <strong>${escapeHtml(senderEmailV)}</strong>` : ''}</div>
+    ${signatureText ? `
+    <div class="sig-line">
+      <div class="sig-name">${escapeHtml(signatureText)}</div>
+      <div class="sig-label">Authorized Signature</div>
+    </div>` : ''}
+  </div>
+
+  ${showWatermark ? `<div class="watermark">Created with <strong style="color:#6366f1;">Invoicely</strong> — Free Freelance Invoice Generator</div>` : ''}
+</body>
+</html>`;
 
     try {
-      // Use html2canvas directly for maximum control
-      const canvas = await html2canvas(invoiceElement, {
+      // Render the clean HTML in a hidden off-screen iframe
+      const iframe = document.createElement('iframe');
+      iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;height:1123px;border:none;visibility:hidden;';
+      document.body.appendChild(iframe);
+
+      iframe.contentDocument.open();
+      iframe.contentDocument.write(html);
+      iframe.contentDocument.close();
+
+      // Wait for fonts/images to settle
+      await new Promise(r => setTimeout(r, 600));
+
+      const canvas = await html2canvas(iframe.contentDocument.body, {
         scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
+        width: 794,
+        scrollX: 0,
         scrollY: 0
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      document.body.removeChild(iframe);
 
-      // Access jsPDF (support both UMD window.jspdf and legacy window.jsPDF)
+      const imgData = canvas.toDataURL('image/jpeg', 0.97);
       const { jsPDF } = window.jspdf || window;
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();   // 210 mm
-      const pdfHeight = pdf.internal.pageSize.getHeight(); // 297 mm
-      const margin = 8; // 8mm margin
-      const usableWidth = pdfWidth - (margin * 2);
-      const usableHeight = pdfHeight - (margin * 2);
+      const pdfW = pdf.internal.pageSize.getWidth();
+      const pdfH = pdf.internal.pageSize.getHeight();
 
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const aspectRatio = imgHeight / imgWidth;
+      // Always scale to fit perfectly on 1 page
+      const ratio     = canvas.height / canvas.width;
+      let imgW        = pdfW;
+      let imgH        = pdfW * ratio;
+      if (imgH > pdfH) { imgH = pdfH; imgW = pdfH / ratio; }
+      const xOff = (pdfW - imgW) / 2;
+      const yOff = (pdfH - imgH) / 2;
 
-      let renderedWidth = usableWidth;
-      let renderedHeight = usableWidth * aspectRatio;
-
-      // If height exceeds usableHeight but is within 1.5 pages, scale down to fit ONE single page!
-      if (renderedHeight > usableHeight && renderedHeight <= usableHeight * 1.5) {
-        const scaleFactor = usableHeight / renderedHeight;
-        renderedWidth = renderedWidth * scaleFactor;
-        renderedHeight = usableHeight;
-      }
-
-      if (renderedHeight <= usableHeight) {
-        // Fits perfectly on 1 page! Center horizontally
-        const xOffset = margin + (usableWidth - renderedWidth) / 2;
-        pdf.addImage(imgData, 'JPEG', xOffset, margin, renderedWidth, renderedHeight, '', 'FAST');
-      } else {
-        // Multi-page fallback only if invoice has a very large number of rows
-        let heightLeft = renderedHeight;
-        let position = margin;
-
-        pdf.addImage(imgData, 'JPEG', margin, position, renderedWidth, renderedHeight, '', 'FAST');
-        heightLeft -= usableHeight;
-
-        while (heightLeft > 0) {
-          position = margin - (renderedHeight - heightLeft);
-          pdf.addPage();
-          pdf.addImage(imgData, 'JPEG', margin, position, renderedWidth, renderedHeight, '', 'FAST');
-          heightLeft -= usableHeight;
-        }
-      }
-
+      pdf.addImage(imgData, 'JPEG', xOff, yOff, imgW, imgH, '', 'FAST');
       pdf.save(filename);
-      showToast('PDF downloaded successfully on 1 page!', 'success');
+      showToast('PDF downloaded — single page!', 'success');
+
     } catch (err) {
-      console.error('PDF export failed:', err);
-      // Fallback to html2pdf if direct engine encounters an issue
-      try {
-        const opt = {
-          margin: [6, 6, 6, 6],
-          filename: filename,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        await html2pdf().set(opt).from(invoiceElement).save();
-        showToast('PDF downloaded!', 'success');
-      } catch (fallbackErr) {
-        console.error('Fallback PDF failed:', fallbackErr);
-        showToast('Please use the Print button to Save as PDF.', 'error');
-      }
-    } finally {
-      invoiceElement.classList.remove('exporting-pdf');
+      console.error('PDF generation error:', err);
+      showToast('PDF failed. Try the Print button → Save as PDF.', 'error');
     }
   }
 
