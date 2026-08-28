@@ -810,26 +810,27 @@ document.addEventListener('DOMContentLoaded', () => {
     
     .invoice-title-box { text-align: right; min-width: 220px; }
     .invoice-heading {
-      font-size: 36px;
+      font-size: 34px;
       font-weight: 900;
       color: ${accent};
       text-transform: uppercase;
       letter-spacing: -1px;
       line-height: 1;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .status-pill-badge {
       display: inline-block;
-      padding: 3px 12px;
+      padding: 4px 14px;
+      line-height: 1.2;
       border-radius: 14px;
       font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       background: #eef2ff;
       color: ${accent};
       border: 1px solid #c7d2fe;
-      margin-bottom: 10px;
+      text-align: center;
     }
     .meta-details-list { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .meta-item-row { display: flex; justify-content: flex-end; gap: 12px; font-size: 10.5px; }
@@ -1046,7 +1047,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="invoice-title-box">
         <div class="invoice-heading">Invoice</div>
-        <div><span class="status-pill-badge">${escapeHtml(statusLabel)}</span></div>
+        <div style="margin-top: 6px; margin-bottom: 12px;"><span class="status-pill-badge">${escapeHtml(statusLabel)}</span></div>
         <div class="meta-details-list">
           <div class="meta-item-row"><span class="meta-label-text">Invoice #:</span><span class="meta-value-text">${escapeHtml(invoiceNum)}</span></div>
           ${invDate  ? `<div class="meta-item-row"><span class="meta-label-text">Issue Date:</span><span class="meta-value-text">${escapeHtml(invDate)}</span></div>` : ''}
