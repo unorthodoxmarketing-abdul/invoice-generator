@@ -927,17 +927,10 @@ document.addEventListener('DOMContentLoaded', () => {
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: #94a3b8;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .note-accent-indicator {
-      display: inline-block;
-      width: 3px;
-      height: 11px;
-      background: ${accent};
-      border-radius: 2px;
+      margin-bottom: 5px;
+      border-left: 3px solid ${accent};
+      padding-left: 7px;
+      line-height: 11px;
     }
     .note-block-content {
       font-size: 10px;
@@ -945,6 +938,7 @@ document.addEventListener('DOMContentLoaded', () => {
       line-height: 1.7;
       white-space: pre-wrap;
       word-wrap: break-word;
+      padding-left: 10px;
     }
     .note-spacer { height: 12px; }
 
@@ -1098,12 +1092,12 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="notes-totals-section">
       <div class="notes-column">
         ${paymentNotes ? `
-          <div class="note-block-title"><span class="note-accent-indicator"></span>Payment Instructions</div>
+          <div class="note-block-title">Payment Instructions</div>
           <div class="note-block-content">${escapeHtml(paymentNotes)}</div>
         ` : ''}
         ${paymentNotes && invoiceTerms ? '<div class="note-spacer"></div>' : ''}
         ${invoiceTerms ? `
-          <div class="note-block-title"><span class="note-accent-indicator"></span>Terms &amp; Notes</div>
+          <div class="note-block-title">Terms &amp; Notes</div>
           <div class="note-block-content">${escapeHtml(invoiceTerms)}</div>
         ` : ''}
       </div>
