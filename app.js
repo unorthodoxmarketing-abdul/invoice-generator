@@ -773,8 +773,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1e293b;background:#fff;width
 .sn{font-size:16px;font-weight:800;color:#0f172a;letter-spacing:-0.3px;margin-bottom:4px;}
 .sm{font-size:9.5px;color:#64748b;line-height:1.8;}
 .hr{text-align:right;}
-.iw{font-size:34px;font-weight:900;color:${accent};text-transform:uppercase;letter-spacing:-1.5px;line-height:1;margin-bottom:10px;}
-.sb{display:inline-block;padding:2px 11px;border-radius:20px;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;background:${accent}18;color:${accent};border:1px solid ${accent}44;margin-bottom:9px;}
+.iw{font-size:34px;font-weight:900;color:${accent};text-transform:uppercase;letter-spacing:-1.5px;line-height:1;margin-bottom:4px;}
+.sb{display:inline-block;padding:2px 11px;border-radius:20px;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;background:${accent}18;color:${accent};border:1px solid ${accent}44;margin-bottom:6px;}
 .im{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
 .mr{display:flex;gap:12px;font-size:10px;}
 .ml{color:#94a3b8;min-width:70px;text-align:right;}
@@ -802,13 +802,14 @@ table.it tbody tr:last-child{border-bottom:2px solid #e2e8f0;}
 .ng{height:11px;}
 .tc{width:215px;flex-shrink:0;}
 .tl{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#64748b;padding:4px 0;border-bottom:1px solid #f1f5f9;}
+.tnb{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#64748b;padding:4px 0;}
 .tv{font-weight:600;color:#1e293b;}
 .tg{font-weight:600;color:#059669;}
 .tt{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#0f172a;padding:6px 0;border-bottom:2px solid #e2e8f0;}
-.tb{display:flex;justify-content:space-between;align-items:center;background:${accent};color:#fff;border-radius:8px;padding:9px 13px;margin-top:9px;}
-.tbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;opacity:0.8;}
-.tbv{font-size:15px;font-weight:900;}
-.ft{margin-top:16px;padding-top:14px;border-top:1.5px solid #e2e8f0;display:flex;justify-content:space-between;align-items:flex-end;}
+.tb{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:${accent};color:#fff;border-radius:8px;padding:10px 13px;margin-top:9px;}
+.tbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;opacity:0.8;margin-bottom:3px;}
+.tbv{font-size:16px;font-weight:900;}
+.ft{margin-top:16px;padding-top:14px;border-top:1.5px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;}
 .fn{font-size:9px;color:#94a3b8;line-height:1.7;}
 .fn strong{color:#64748b;}
 .sw{text-align:right;}
@@ -868,7 +869,7 @@ table.it tbody tr:last-child{border-bottom:2px solid #e2e8f0;}
     ${taxAmt>0      ? `<div class="tl"><span>Tax / VAT (${taxRateV}%)</span><span class="tv">${currentCurrency}${formatNumber(taxAmt.toFixed(2))}</span></div>` : ''}
     ${extraFeeV>0   ? `<div class="tl"><span>Shipping / Extra</span><span class="tv">${currentCurrency}${formatNumber(extraFeeV.toFixed(2))}</span></div>` : ''}
     <div class="tt"><span>Total</span><span>${currentCurrency}${formatNumber(grandTotal.toFixed(2))}</span></div>
-    ${paidAmt>0     ? `<div class="tl"><span>Amount Paid</span><span class="tg">&#8722;&thinsp;${currentCurrency}${formatNumber(paidAmt.toFixed(2))}</span></div>` : ''}
+    ${paidAmt>0     ? `<div class="tnb"><span>Amount Paid</span><span class="tg">&#8722;&thinsp;${currentCurrency}${formatNumber(paidAmt.toFixed(2))}</span></div>` : ''}
     <div class="tb"><span class="tbl">Balance Due</span><span class="tbv">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</span></div>
   </div>
 </div>
