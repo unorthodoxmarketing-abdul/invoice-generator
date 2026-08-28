@@ -696,8 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Exported invoice JSON data file', 'success');
   }
 
-
-  // ─── PDF GENERATION — Professional Balanced Layout ───────────────────────
+  // ─── PDF GENERATION — Professional Balanced Full-Page Layout ─────────────
 
   async function generatePDF() {
     showToast('Generating PDF...', 'info');
@@ -705,7 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const invoiceNum    = document.getElementById('invoiceNumber').value  || 'Invoice';
     const clientName    = document.getElementById('clientName').value     || 'Client';
     const filename      = `${invoiceNum}_${clientName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-    const accent        = currentAccentColor;
+    const accent        = currentAccentColor || '#4f46e5';
 
     const senderName    = document.getElementById('senderName').value;
     const senderTitle   = document.getElementById('senderTitle').value;
@@ -733,13 +732,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const rate  = parseFloat(row.querySelector('.item-rate')?.value) || 0;
       const total = qty * rate;
       subtotal += total;
-      const bg = rowIdx % 2 === 0 ? '#ffffff' : '#fafbfc';
+      const bg = rowIdx % 2 === 0 ? '#ffffff' : '#f8fafc';
       rowIdx++;
-      itemsHTML += `<tr style="background:${bg};border-bottom:1px solid #f1f5f9;">
-        <td style="padding:9px 12px;font-size:10.5px;color:#0f172a;font-weight:500;word-wrap:break-word;word-break:break-word;width:50%;">${escapeHtml(desc)}</td>
-        <td style="padding:9px 10px;font-size:10.5px;color:#475569;text-align:right;white-space:nowrap;width:12%;">${qty}</td>
-        <td style="padding:9px 10px;font-size:10.5px;color:#475569;text-align:right;white-space:nowrap;width:18%;">${currentCurrency}${formatNumber(rate.toFixed(2))}</td>
-        <td style="padding:9px 12px;font-size:10.5px;color:#0f172a;font-weight:700;text-align:right;white-space:nowrap;width:20%;">${currentCurrency}${formatNumber(total.toFixed(2))}</td>
+      itemsHTML += `<tr style="background:${bg};border-bottom:1px solid #e2e8f0;">
+        <td style="padding:10px 14px;font-size:11px;color:#0f172a;font-weight:500;word-wrap:break-word;word-break:break-word;width:48%;">${escapeHtml(desc)}</td>
+        <td style="padding:10px 12px;font-size:11px;color:#475569;text-align:right;white-space:nowrap;width:12%;">${qty}</td>
+        <td style="padding:10px 12px;font-size:11px;color:#475569;text-align:right;white-space:nowrap;width:20%;">${currentCurrency}${formatNumber(rate.toFixed(2))}</td>
+        <td style="padding:10px 14px;font-size:11px;color:#0f172a;font-weight:700;text-align:right;white-space:nowrap;width:20%;">${currentCurrency}${formatNumber(total.toFixed(2))}</td>
       </tr>`;
     });
 
@@ -755,186 +754,423 @@ document.addEventListener('DOMContentLoaded', () => {
     const balanceDue  = Math.max(0, grandTotal - paidAmt);
 
     const logoHTML = logoDataUrl
-      ? `<img src="${logoDataUrl}" style="max-width:95px;max-height:48px;object-fit:contain;display:block;margin-bottom:10px;" alt="Logo">`
+      ? `<img src="${logoDataUrl}" style="max-width:110px;max-height:55px;object-fit:contain;display:block;margin-bottom:12px;" alt="Logo">`
       : '';
 
-    const senderLines    = [senderTitle, senderEmailV, senderAddress, senderTaxId].filter(Boolean).map(v => escapeHtml(v)).join('<br>');
-    const clientLines    = [clientContact, clientEmail, clientAddress].filter(Boolean).map(v => escapeHtml(v)).join('<br>');
+    const senderLines = [senderTitle, senderEmailV, senderAddress, senderTaxId].filter(Boolean).map(v => escapeHtml(v)).join('<br>');
+    const clientLines = [clientContact, clientEmail, clientAddress].filter(Boolean).map(v => escapeHtml(v)).join('<br>');
 
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI',Arial,sans-serif;color:#1e293b;background:#fff;width:794px;}
-.page{display:flex;}
-.sidebar{width:5px;background:${accent};flex-shrink:0;}
-.content{flex:1;padding:30px 32px 24px 28px;}
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      background: #ffffff;
+      width: 794px;
+      height: 1123px;
+    }
+    .page-container {
+      width: 794px;
+      height: 1123px;
+      display: flex;
+      background: #ffffff;
+      overflow: hidden;
+    }
+    .left-accent-bar {
+      width: 6px;
+      background: ${accent};
+      flex-shrink: 0;
+      height: 100%;
+    }
+    .main-body {
+      flex: 1;
+      padding: 40px 42px 36px 36px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      box-sizing: border-box;
+    }
 
-.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;margin-bottom:18px;border-bottom:1.5px solid #e2e8f0;}
-.sn{font-size:16px;font-weight:800;color:#0f172a;letter-spacing:-0.3px;margin-bottom:4px;}
-.sm{font-size:9.5px;color:#64748b;line-height:1.8;}
-.hr{text-align:right;}
-.iw{font-size:34px;font-weight:900;color:${accent};text-transform:uppercase;letter-spacing:-1.5px;line-height:1;margin-bottom:4px;}
-.sb{display:inline-block;padding:3px 12px;border-radius:20px;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;background:#f0f0ff;color:${accent};border:1px solid #c7c7ff;margin-bottom:6px;}
-.im{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
-.mr{display:flex;gap:12px;font-size:10px;}
-.ml{color:#94a3b8;min-width:70px;text-align:right;}
-.mv{font-weight:700;color:#0f172a;min-width:115px;text-align:right;}
+    /* HEADER */
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 22px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .sender-box { flex: 1; }
+    .sender-title-name { font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: -0.3px; margin-bottom: 4px; }
+    .sender-details { font-size: 10px; color: #64748b; line-height: 1.7; }
+    
+    .invoice-title-box { text-align: right; min-width: 220px; }
+    .invoice-heading {
+      font-size: 36px;
+      font-weight: 900;
+      color: ${accent};
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .status-pill-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 14px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: #eef2ff;
+      color: ${accent};
+      border: 1px solid #c7d2fe;
+      margin-bottom: 10px;
+    }
+    .meta-details-list { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .meta-item-row { display: flex; justify-content: flex-end; gap: 12px; font-size: 10.5px; }
+    .meta-label-text { color: #94a3b8; font-weight: 500; }
+    .meta-value-text { font-weight: 700; color: #0f172a; min-width: 100px; text-align: right; }
 
-.ir{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:18px;}
-.bb{flex:1;}
-.slbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:#94a3b8;margin-bottom:6px;}
-.cn{font-size:14px;font-weight:800;color:#0f172a;margin-bottom:3px;}
-.cs{font-size:10px;color:#64748b;line-height:1.7;}
-.bx{width:188px;flex-shrink:0;background:${accent};border-radius:10px;padding:14px 16px;color:#fff;text-align:right;}
-.bxl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;opacity:0.8;margin-bottom:5px;}
-.bxa{font-size:21px;font-weight:900;letter-spacing:-0.5px;line-height:1;}
-.bxd{font-size:9px;opacity:0.75;margin-top:5px;}
+    /* CLIENT & BALANCE ROW */
+    .client-balance-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      gap: 20px;
+    }
+    .client-info-box { flex: 1; }
+    .section-small-title {
+      font-size: 8.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .client-title-name { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+    .client-details { font-size: 10.5px; color: #64748b; line-height: 1.65; }
 
-table.it{width:100%;border-collapse:collapse;margin-bottom:14px;}
-table.it thead tr{background:#f8fafc;}
-table.it thead th{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#94a3b8;padding:8px 10px;text-align:right;}
-table.it thead th:first-child{text-align:left;padding-left:12px;border-radius:6px 0 0 6px;}
-table.it thead th:last-child{padding-right:12px;border-radius:0 6px 6px 0;}
-table.it tbody tr:last-child{border-bottom:2px solid #e2e8f0;}
+    .balance-card-box {
+      width: 200px;
+      background: ${accent};
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: #ffffff;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .balance-card-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 4px;
+    }
+    .balance-card-amount {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .balance-card-due {
+      font-size: 9.5px;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
 
-.br{display:flex;gap:26px;align-items:flex-start;}
-.nc{flex:1;min-width:0;}
-.nl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:#94a3b8;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
-.nlbar{display:inline-block;width:3px;height:11px;background:${accent};border-radius:2px;flex-shrink:0;vertical-align:middle;}
-.nt{font-size:9.5px;color:#475569;line-height:1.8;white-space:pre-wrap;word-wrap:break-word;}
-.ng{height:11px;}
+    /* LINE ITEMS TABLE */
+    .table-container { margin-bottom: 20px; }
+    table.pdf-items-table { width: 100%; border-collapse: collapse; }
+    table.pdf-items-table thead tr { background: #f1f5f9; }
+    table.pdf-items-table thead th {
+      font-size: 8.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      padding: 9px 12px;
+      text-align: right;
+    }
+    table.pdf-items-table thead th:first-child { text-align: left; padding-left: 14px; border-radius: 6px 0 0 6px; }
+    table.pdf-items-table thead th:last-child { padding-right: 14px; border-radius: 0 6px 6px 0; }
+    table.pdf-items-table tbody tr:last-child { border-bottom: 2px solid #cbd5e1; }
 
-.tc{width:215px;flex-shrink:0;}
-.tl{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#64748b;padding:4px 0;border-bottom:1px solid #f1f5f9;}
-.tnb{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#64748b;padding:4px 0;}
-.tv{font-weight:600;color:#1e293b;}
-.tg{font-weight:600;color:#059669;}
-.tt{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#0f172a;padding:6px 0;border-bottom:2px solid #e2e8f0;}
-.tb{background:${accent};color:#fff;border-radius:8px;padding:10px 13px;margin-top:9px;text-align:center;}
-.tbl{display:block;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;opacity:0.8;margin-bottom:3px;}
-.tbv{display:block;font-size:16px;font-weight:900;}
+    /* NOTES & TOTALS SECTION */
+    .notes-totals-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    .notes-column { flex: 1; }
+    .note-block-title {
+      font-size: 8.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .note-accent-indicator {
+      display: inline-block;
+      width: 3px;
+      height: 11px;
+      background: ${accent};
+      border-radius: 2px;
+    }
+    .note-block-content {
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .note-spacer { height: 12px; }
 
-.ft{margin-top:16px;padding-top:14px;border-top:1.5px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;}
-.fn{font-size:9px;color:#94a3b8;line-height:1.7;}
-.fn strong{color:#64748b;}
-.sw{text-align:right;}
-.ssn{font-family:Georgia,serif;font-style:italic;font-size:21px;color:${accent};font-weight:600;line-height:1;}
-.sigline{width:148px;height:1px;background:#cbd5e1;margin:5px 0 3px auto;}
-.siglbl{font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:#94a3b8;}
-.wm{text-align:center;font-size:8px;color:#d1d5db;padding-top:9px;}
-</style></head>
-<body><div class="page"><div class="sidebar"></div><div class="content">
+    .totals-column { width: 230px; flex-shrink: 0; }
+    .summary-line-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      color: #64748b;
+      padding: 4px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .summary-line-row-noborder {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10.5px;
+      color: #64748b;
+      padding: 5px 0 2px 0;
+    }
+    .summary-val-dark { font-weight: 600; color: #1e293b; }
+    .summary-val-green { font-weight: 600; color: #059669; }
+    .grand-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      padding: 7px 0;
+      border-top: 1.5px solid #e2e8f0;
+      border-bottom: 2px solid #cbd5e1;
+      margin-top: 2px;
+      margin-bottom: 2px;
+    }
+    .final-balance-card {
+      background: ${accent};
+      color: #ffffff;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 8px;
+      text-align: center;
+    }
+    .final-balance-label {
+      display: block;
+      font-size: 8.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      margin-bottom: 3px;
+    }
+    .final-balance-amount {
+      display: block;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
 
-<div class="hdr">
-  <div>${logoHTML}<div class="sn">${escapeHtml(senderName)||'Your Business'}</div><div class="sm">${senderLines}</div></div>
-  <div class="hr">
-    <div class="iw">Invoice</div>
-    <div class="sb">${escapeHtml(statusLabel)}</div>
-    <div class="im">
-      <div class="mr"><span class="ml">Invoice&nbsp;#</span><span class="mv">${escapeHtml(invoiceNum)}</span></div>
-      ${invDate  ? `<div class="mr"><span class="ml">Issue&nbsp;Date</span><span class="mv">${escapeHtml(invDate)}</span></div>`     : ''}
-      ${dueDate  ? `<div class="mr"><span class="ml">Due&nbsp;Date</span><span class="mv">${escapeHtml(dueDate)}</span></div>`       : ''}
-      ${poNumber ? `<div class="mr"><span class="ml">PO&nbsp;/&nbsp;Ref</span><span class="mv">${escapeHtml(poNumber)}</span></div>` : ''}
+    /* FOOTER */
+    .footer-section {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1.5px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .footer-support-text { font-size: 9.5px; color: #94a3b8; line-height: 1.6; }
+    .footer-support-text strong { color: #475569; }
+    
+    .signature-area-box { text-align: right; min-width: 160px; }
+    .signature-script-text {
+      font-family: "Brush Script MT", "Caveat", "Segoe Script", Georgia, cursive;
+      font-size: 24px;
+      color: ${accent};
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .signature-ruling-line {
+      width: 150px;
+      height: 1.5px;
+      background: #cbd5e1;
+      margin: 0 0 4px auto;
+    }
+    .signature-title-label {
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #94a3b8;
+    }
+    .watermark-banner { text-align: center; font-size: 8.5px; color: #cbd5e1; padding-top: 10px; }
+  </style>
+</head>
+<body>
+<div class="page-container">
+  <div class="left-accent-bar"></div>
+  <div class="main-body">
+
+    <!-- HEADER -->
+    <div class="header-section">
+      <div class="sender-box">
+        ${logoHTML}
+        <div class="sender-title-name">${escapeHtml(senderName) || 'Your Business'}</div>
+        <div class="sender-details">${senderLines}</div>
+      </div>
+      <div class="invoice-title-box">
+        <div class="invoice-heading">Invoice</div>
+        <div><span class="status-pill-badge">${escapeHtml(statusLabel)}</span></div>
+        <div class="meta-details-list">
+          <div class="meta-item-row"><span class="meta-label-text">Invoice #:</span><span class="meta-value-text">${escapeHtml(invoiceNum)}</span></div>
+          ${invDate  ? `<div class="meta-item-row"><span class="meta-label-text">Issue Date:</span><span class="meta-value-text">${escapeHtml(invDate)}</span></div>` : ''}
+          ${dueDate  ? `<div class="meta-item-row"><span class="meta-label-text">Due Date:</span><span class="meta-value-text">${escapeHtml(dueDate)}</span></div>` : ''}
+          ${poNumber ? `<div class="meta-item-row"><span class="meta-label-text">PO / Ref:</span><span class="meta-value-text">${escapeHtml(poNumber)}</span></div>` : ''}
+        </div>
+      </div>
     </div>
+
+    <!-- CLIENT & BALANCE ROW -->
+    <div class="client-balance-section">
+      <div class="client-info-box">
+        <div class="section-small-title">Billed To</div>
+        <div class="client-title-name">${escapeHtml(clientName)}</div>
+        <div class="client-details">${clientLines}</div>
+      </div>
+      <div class="balance-card-box">
+        <div class="balance-card-label">Balance Due</div>
+        <div class="balance-card-amount">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</div>
+        ${dueDate ? `<div class="balance-card-due">Due ${escapeHtml(dueDate)}</div>` : ''}
+      </div>
+    </div>
+
+    <!-- ITEMS TABLE -->
+    <div class="table-container">
+      <table class="pdf-items-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th style="width:12%;">Qty / Hrs</th>
+            <th style="width:20%;">Rate (${escapeHtml(currentCurrency)})</th>
+            <th style="width:20%;">Amount (${escapeHtml(currentCurrency)})</th>
+          </tr>
+        </thead>
+        <tbody>${itemsHTML}</tbody>
+      </table>
+    </div>
+
+    <!-- NOTES & TOTALS -->
+    <div class="notes-totals-section">
+      <div class="notes-column">
+        ${paymentNotes ? `
+          <div class="note-block-title"><span class="note-accent-indicator"></span>Payment Instructions</div>
+          <div class="note-block-content">${escapeHtml(paymentNotes)}</div>
+        ` : ''}
+        ${paymentNotes && invoiceTerms ? '<div class="note-spacer"></div>' : ''}
+        ${invoiceTerms ? `
+          <div class="note-block-title"><span class="note-accent-indicator"></span>Terms &amp; Notes</div>
+          <div class="note-block-content">${escapeHtml(invoiceTerms)}</div>
+        ` : ''}
+      </div>
+      <div class="totals-column">
+        <div class="summary-line-row"><span>Subtotal</span><span class="summary-val-dark">${currentCurrency}${formatNumber(subtotal.toFixed(2))}</span></div>
+        ${discountAmt > 0 ? `<div class="summary-line-row"><span>Discount</span><span class="summary-val-green">&#8722;&thinsp;${currentCurrency}${formatNumber(discountAmt.toFixed(2))}</span></div>` : ''}
+        ${taxAmt > 0      ? `<div class="summary-line-row"><span>Tax / VAT (${taxRateV}%)</span><span class="summary-val-dark">${currentCurrency}${formatNumber(taxAmt.toFixed(2))}</span></div>` : ''}
+        ${extraFeeV > 0   ? `<div class="summary-line-row"><span>Shipping / Extra</span><span class="summary-val-dark">${currentCurrency}${formatNumber(extraFeeV.toFixed(2))}</span></div>` : ''}
+        <div class="grand-total-row"><span>Total</span><span>${currentCurrency}${formatNumber(grandTotal.toFixed(2))}</span></div>
+        ${paidAmt > 0     ? `<div class="summary-line-row-noborder"><span>Amount Paid</span><span class="summary-val-green">&#8722;&thinsp;${currentCurrency}${formatNumber(paidAmt.toFixed(2))}</span></div>` : ''}
+        <div class="final-balance-card">
+          <span class="final-balance-label">Balance Due</span>
+          <span class="final-balance-amount">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-section">
+      <div class="footer-support-text">
+        ${senderEmailV ? `Questions? Contact <strong>${escapeHtml(senderEmailV)}</strong>` : ''}
+        ${senderName   ? `<br><strong>${escapeHtml(senderName)}</strong>` : ''}
+      </div>
+      ${signatureText ? `
+        <div class="signature-area-box">
+          <div class="signature-script-text">${escapeHtml(signatureText)}</div>
+          <div class="signature-ruling-line"></div>
+          <div class="signature-title-label">Authorized Signature</div>
+        </div>
+      ` : ''}
+    </div>
+
+    ${showWatermark ? `<div class="watermark-banner">Generated by <strong style="color:#6366f1;">Invoicely</strong> &nbsp;&middot;&nbsp; Free Professional Invoice Generator</div>` : ''}
+
   </div>
 </div>
-
-<div class="ir">
-  <div class="bb">
-    <div class="slbl">Billed To</div>
-    <div class="cn">${escapeHtml(clientName)}</div>
-    <div class="cs">${clientLines}</div>
-  </div>
-  <div class="bx">
-    <div class="bxl">Balance Due</div>
-    <div class="bxa">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</div>
-    ${dueDate ? `<div class="bxd">Due ${escapeHtml(dueDate)}</div>` : ''}
-  </div>
-</div>
-
-<table class="it">
-  <thead><tr>
-    <th>Description</th>
-    <th style="width:12%;">Qty / Hrs</th>
-    <th style="width:18%;">Rate (${escapeHtml(currentCurrency)})</th>
-    <th style="width:20%;">Amount (${escapeHtml(currentCurrency)})</th>
-  </tr></thead>
-  <tbody>${itemsHTML}</tbody>
-</table>
-
-<div class="br">
-  <div class="nc">
-    ${paymentNotes ? `<div class="nl"><span class="nlbar"></span>Payment Instructions</div><div class="nt">${escapeHtml(paymentNotes)}</div>` : ''}
-    ${paymentNotes && invoiceTerms ? '<div class="ng"></div>' : ''}
-    ${invoiceTerms ? `<div class="nl"><span class="nlbar"></span>Terms &amp; Notes</div><div class="nt">${escapeHtml(invoiceTerms)}</div>` : ''}
-  </div>
-  <div class="tc">
-    <div class="tl"><span>Subtotal</span><span class="tv">${currentCurrency}${formatNumber(subtotal.toFixed(2))}</span></div>
-    ${discountAmt>0 ? `<div class="tl"><span>Discount</span><span class="tg">&#8722;&thinsp;${currentCurrency}${formatNumber(discountAmt.toFixed(2))}</span></div>` : ''}
-    ${taxAmt>0      ? `<div class="tl"><span>Tax / VAT (${taxRateV}%)</span><span class="tv">${currentCurrency}${formatNumber(taxAmt.toFixed(2))}</span></div>` : ''}
-    ${extraFeeV>0   ? `<div class="tl"><span>Shipping / Extra</span><span class="tv">${currentCurrency}${formatNumber(extraFeeV.toFixed(2))}</span></div>` : ''}
-    <div class="tt"><span>Total</span><span>${currentCurrency}${formatNumber(grandTotal.toFixed(2))}</span></div>
-    ${paidAmt>0     ? `<div class="tnb"><span>Amount Paid</span><span class="tg">&#8722;&thinsp;${currentCurrency}${formatNumber(paidAmt.toFixed(2))}</span></div>` : ''}
-    <div class="tb"><span class="tbl">Balance Due</span><span class="tbv">${currentCurrency}${formatNumber(balanceDue.toFixed(2))}</span></div>
-  </div>
-</div>
-
-<div class="ft">
-  <div class="fn">
-    ${senderEmailV ? `Questions?&nbsp;<strong>${escapeHtml(senderEmailV)}</strong>` : ''}
-    ${senderName   ? `<br><strong>${escapeHtml(senderName)}</strong>` : ''}
-  </div>
-  ${signatureText ? `<div class="sw"><div class="ssn">${escapeHtml(signatureText)}</div><div class="sigline"></div><div class="siglbl">Authorized Signature</div></div>` : ''}
-</div>
-${showWatermark ? `<div class="wm">Generated by <strong style="color:#818cf8;">Invoicely</strong>&nbsp;&middot;&nbsp;Free Professional Invoice Generator</div>` : ''}
-
-</div></div></body></html>`;
+</body>
+</html>`;
 
     try {
       const iframe = document.createElement('iframe');
-      // Give iframe a generous height so nothing is clipped
-      iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;height:4000px;border:none;visibility:hidden;';
+      iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;height:1123px;border:none;visibility:hidden;';
       document.body.appendChild(iframe);
       iframe.contentDocument.open();
       iframe.contentDocument.write(html);
       iframe.contentDocument.close();
-      // Wait for layout to settle
-      await new Promise(r => setTimeout(r, 800));
 
-      // Capture the FULL content height, not the viewport height
-      const fullHeight = iframe.contentDocument.body.scrollHeight || 1123;
+      await new Promise(r => setTimeout(r, 600));
+
       const canvas = await html2canvas(iframe.contentDocument.body, {
-        scale: 2, useCORS: true, logging: false,
+        scale: 2,
+        useCORS: true,
+        logging: false,
         backgroundColor: '#ffffff',
         width: 794,
-        height: fullHeight,
+        height: 1123,
         windowWidth: 794,
-        windowHeight: fullHeight,
+        windowHeight: 1123,
         scrollX: 0,
         scrollY: 0
       });
       document.body.removeChild(iframe);
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.97);
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
       const { jsPDF } = window.jspdf || window;
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pdfW = pdf.internal.pageSize.getWidth();   // 210mm
       const pdfH = pdf.internal.pageSize.getHeight();  // 297mm
 
-      // Always scale to fit exactly 1 page — no matter the content height
-      const ratio = canvas.height / canvas.width;
-      let imgW = pdfW;
-      let imgH = pdfW * ratio;
-      if (imgH > pdfH) { imgH = pdfH; imgW = pdfH / ratio; }
-      const xOff = (pdfW - imgW) / 2;
-      const yOff = (pdfH - imgH) / 2;
-
-      pdf.addImage(imgData, 'JPEG', xOff, yOff, imgW, imgH, '', 'FAST');
+      // Direct full-page A4 placement: starts exactly at the top (0, 0)
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH, '', 'FAST');
       pdf.save(filename);
       showToast('PDF downloaded — single page!', 'success');
     } catch (err) {
       console.error('PDF error:', err);
-      showToast('PDF failed. Try the Print button instead.', 'error');
+      showToast('PDF failed. Please try again.', 'error');
     }
   }
 
