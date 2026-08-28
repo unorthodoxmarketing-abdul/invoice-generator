@@ -767,55 +767,60 @@ document.addEventListener('DOMContentLoaded', () => {
 body{font-family:'Segoe UI',Arial,sans-serif;color:#1e293b;background:#fff;width:794px;}
 .page{display:flex;}
 .sidebar{width:5px;background:${accent};flex-shrink:0;}
-.content{flex:1;padding:30px 32px 24px 28px;display:flex;flex-direction:column;}
+.content{flex:1;padding:30px 32px 24px 28px;}
 
 .hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;margin-bottom:18px;border-bottom:1.5px solid #e2e8f0;}
 .sn{font-size:16px;font-weight:800;color:#0f172a;letter-spacing:-0.3px;margin-bottom:4px;}
 .sm{font-size:9.5px;color:#64748b;line-height:1.8;}
 .hr{text-align:right;}
 .iw{font-size:34px;font-weight:900;color:${accent};text-transform:uppercase;letter-spacing:-1.5px;line-height:1;margin-bottom:4px;}
-.sb{display:inline-block;padding:2px 11px;border-radius:20px;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;background:${accent}18;color:${accent};border:1px solid ${accent}44;margin-bottom:6px;}
+.sb{display:inline-block;padding:3px 12px;border-radius:20px;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;background:#f0f0ff;color:${accent};border:1px solid #c7c7ff;margin-bottom:6px;}
 .im{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
 .mr{display:flex;gap:12px;font-size:10px;}
 .ml{color:#94a3b8;min-width:70px;text-align:right;}
 .mv{font-weight:700;color:#0f172a;min-width:115px;text-align:right;}
+
 .ir{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:18px;}
 .bb{flex:1;}
-.sl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:#94a3b8;margin-bottom:6px;}
+.slbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:#94a3b8;margin-bottom:6px;}
 .cn{font-size:14px;font-weight:800;color:#0f172a;margin-bottom:3px;}
 .cs{font-size:10px;color:#64748b;line-height:1.7;}
 .bx{width:188px;flex-shrink:0;background:${accent};border-radius:10px;padding:14px 16px;color:#fff;text-align:right;}
-.bxl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;opacity:0.75;margin-bottom:5px;}
+.bxl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;opacity:0.8;margin-bottom:5px;}
 .bxa{font-size:21px;font-weight:900;letter-spacing:-0.5px;line-height:1;}
-.bxd{font-size:9px;opacity:0.72;margin-top:5px;}
+.bxd{font-size:9px;opacity:0.75;margin-top:5px;}
+
 table.it{width:100%;border-collapse:collapse;margin-bottom:14px;}
 table.it thead tr{background:#f8fafc;}
 table.it thead th{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#94a3b8;padding:8px 10px;text-align:right;}
 table.it thead th:first-child{text-align:left;padding-left:12px;border-radius:6px 0 0 6px;}
 table.it thead th:last-child{padding-right:12px;border-radius:0 6px 6px 0;}
 table.it tbody tr:last-child{border-bottom:2px solid #e2e8f0;}
+
 .br{display:flex;gap:26px;align-items:flex-start;}
 .nc{flex:1;min-width:0;}
 .nl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:#94a3b8;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
-.nl::before{content:'';width:3px;height:11px;background:${accent};border-radius:2px;flex-shrink:0;}
+.nlbar{display:inline-block;width:3px;height:11px;background:${accent};border-radius:2px;flex-shrink:0;vertical-align:middle;}
 .nt{font-size:9.5px;color:#475569;line-height:1.8;white-space:pre-wrap;word-wrap:break-word;}
 .ng{height:11px;}
+
 .tc{width:215px;flex-shrink:0;}
 .tl{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#64748b;padding:4px 0;border-bottom:1px solid #f1f5f9;}
 .tnb{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#64748b;padding:4px 0;}
 .tv{font-weight:600;color:#1e293b;}
 .tg{font-weight:600;color:#059669;}
 .tt{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#0f172a;padding:6px 0;border-bottom:2px solid #e2e8f0;}
-.tb{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:${accent};color:#fff;border-radius:8px;padding:10px 13px;margin-top:9px;}
-.tbl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;opacity:0.8;margin-bottom:3px;}
-.tbv{font-size:16px;font-weight:900;}
+.tb{background:${accent};color:#fff;border-radius:8px;padding:10px 13px;margin-top:9px;text-align:center;}
+.tbl{display:block;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;opacity:0.8;margin-bottom:3px;}
+.tbv{display:block;font-size:16px;font-weight:900;}
+
 .ft{margin-top:16px;padding-top:14px;border-top:1.5px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;}
 .fn{font-size:9px;color:#94a3b8;line-height:1.7;}
 .fn strong{color:#64748b;}
 .sw{text-align:right;}
 .ssn{font-family:Georgia,serif;font-style:italic;font-size:21px;color:${accent};font-weight:600;line-height:1;}
-.sr{width:148px;height:1px;background:#cbd5e1;margin:5px 0 3px auto;}
-.sl2{font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:#94a3b8;}
+.sigline{width:148px;height:1px;background:#cbd5e1;margin:5px 0 3px auto;}
+.siglbl{font-size:7.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:#94a3b8;}
 .wm{text-align:center;font-size:8px;color:#d1d5db;padding-top:9px;}
 </style></head>
 <body><div class="page"><div class="sidebar"></div><div class="content">
@@ -836,7 +841,7 @@ table.it tbody tr:last-child{border-bottom:2px solid #e2e8f0;}
 
 <div class="ir">
   <div class="bb">
-    <div class="sl">Billed To</div>
+    <div class="slbl">Billed To</div>
     <div class="cn">${escapeHtml(clientName)}</div>
     <div class="cs">${clientLines}</div>
   </div>
@@ -859,9 +864,9 @@ table.it tbody tr:last-child{border-bottom:2px solid #e2e8f0;}
 
 <div class="br">
   <div class="nc">
-    ${paymentNotes ? `<div class="nl">Payment Instructions</div><div class="nt">${escapeHtml(paymentNotes)}</div>` : ''}
+    ${paymentNotes ? `<div class="nl"><span class="nlbar"></span>Payment Instructions</div><div class="nt">${escapeHtml(paymentNotes)}</div>` : ''}
     ${paymentNotes && invoiceTerms ? '<div class="ng"></div>' : ''}
-    ${invoiceTerms ? `<div class="nl">Terms &amp; Notes</div><div class="nt">${escapeHtml(invoiceTerms)}</div>` : ''}
+    ${invoiceTerms ? `<div class="nl"><span class="nlbar"></span>Terms &amp; Notes</div><div class="nt">${escapeHtml(invoiceTerms)}</div>` : ''}
   </div>
   <div class="tc">
     <div class="tl"><span>Subtotal</span><span class="tv">${currentCurrency}${formatNumber(subtotal.toFixed(2))}</span></div>
@@ -879,7 +884,7 @@ table.it tbody tr:last-child{border-bottom:2px solid #e2e8f0;}
     ${senderEmailV ? `Questions?&nbsp;<strong>${escapeHtml(senderEmailV)}</strong>` : ''}
     ${senderName   ? `<br><strong>${escapeHtml(senderName)}</strong>` : ''}
   </div>
-  ${signatureText ? `<div class="sw"><div class="ssn">${escapeHtml(signatureText)}</div><div class="sr"></div><div class="sl2">Authorized Signature</div></div>` : ''}
+  ${signatureText ? `<div class="sw"><div class="ssn">${escapeHtml(signatureText)}</div><div class="sigline"></div><div class="siglbl">Authorized Signature</div></div>` : ''}
 </div>
 ${showWatermark ? `<div class="wm">Generated by <strong style="color:#818cf8;">Invoicely</strong>&nbsp;&middot;&nbsp;Free Professional Invoice Generator</div>` : ''}
 
