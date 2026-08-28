@@ -815,22 +815,31 @@ document.addEventListener('DOMContentLoaded', () => {
       color: ${accent};
       text-transform: uppercase;
       letter-spacing: -1px;
-      line-height: 1;
-      margin-bottom: 8px;
+      line-height: 42px;
+      height: 42px;
+      margin-bottom: 14px;
+      display: block;
     }
-    .status-pill-badge {
-      display: inline-block;
-      padding: 4px 14px;
-      line-height: 1.2;
-      border-radius: 14px;
+    .status-pill-table {
+      display: inline-table;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 0 0 12px auto;
+    }
+    .status-pill-td {
+      background: #eef2ff;
+      color: ${accent};
+      border: 1px solid #c7d2fe;
+      border-radius: 12px;
+      padding: 3px 14px;
       font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      background: #eef2ff;
-      color: ${accent};
-      border: 1px solid #c7d2fe;
       text-align: center;
+      vertical-align: middle;
+      line-height: 14px;
+      height: 22px;
     }
     .meta-details-list { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .meta-item-row { display: flex; justify-content: flex-end; gap: 12px; font-size: 10.5px; }
@@ -1047,7 +1056,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="invoice-title-box">
         <div class="invoice-heading">Invoice</div>
-        <div style="margin-top: 6px; margin-bottom: 12px;"><span class="status-pill-badge">${escapeHtml(statusLabel)}</span></div>
+        <table class="status-pill-table"><tr><td class="status-pill-td">${escapeHtml(statusLabel)}</td></tr></table>
         <div class="meta-details-list">
           <div class="meta-item-row"><span class="meta-label-text">Invoice #:</span><span class="meta-value-text">${escapeHtml(invoiceNum)}</span></div>
           ${invDate  ? `<div class="meta-item-row"><span class="meta-label-text">Issue Date:</span><span class="meta-value-text">${escapeHtml(invDate)}</span></div>` : ''}
