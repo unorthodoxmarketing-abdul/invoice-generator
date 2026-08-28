@@ -830,16 +830,16 @@ document.addEventListener('DOMContentLoaded', () => {
       background: #eef2ff;
       color: ${accent};
       border: 1px solid #c7d2fe;
-      border-radius: 12px;
-      padding: 3px 14px;
-      font-size: 9px;
-      font-weight: 700;
+      border-radius: 10px;
+      padding: 1px 12px 3px 12px;
+      font-size: 8.5px;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       text-align: center;
       vertical-align: middle;
-      line-height: 14px;
-      height: 22px;
+      line-height: 12px;
+      height: 18px;
     }
     .meta-details-list { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .meta-item-row { display: flex; justify-content: flex-end; gap: 12px; font-size: 10.5px; }
@@ -955,8 +955,7 @@ document.addEventListener('DOMContentLoaded', () => {
       align-items: center;
       font-size: 10.5px;
       color: #64748b;
-      padding: 4px 0;
-      border-bottom: 1px solid #f1f5f9;
+      padding: 3.5px 0;
     }
     .summary-line-row-noborder {
       display: flex;
@@ -964,7 +963,7 @@ document.addEventListener('DOMContentLoaded', () => {
       align-items: center;
       font-size: 10.5px;
       color: #64748b;
-      padding: 5px 0 2px 0;
+      padding: 4px 0 2px 0;
     }
     .summary-val-dark { font-weight: 600; color: #1e293b; }
     .summary-val-green { font-weight: 600; color: #059669; }
@@ -978,7 +977,7 @@ document.addEventListener('DOMContentLoaded', () => {
       padding: 7px 0;
       border-top: 1.5px solid #e2e8f0;
       border-bottom: 2px solid #cbd5e1;
-      margin-top: 2px;
+      margin-top: 4px;
       margin-bottom: 2px;
     }
     .final-balance-card {
